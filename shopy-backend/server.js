@@ -43,5 +43,3 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
-
-// Copy this token — you'll need it for TEST 3 and 4: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YjgyNjhkYzVkYTY1ODVmNTk2ODI4YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc3MzY3NjE3MywiZXhwIjoxNzc0MjgwOTczfQ.qtYqIv7r1Q1YwdpnG28vKUUoJru0HpmHIOf-5ZBBXXM
