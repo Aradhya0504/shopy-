@@ -23,9 +23,9 @@ Shopy is a full-stack e-commerce platform.
 ```
 shopy/
 ├── README.md
+├── .gitignore
 ├── shopy-backend/
-│   ├── .env
-│   ├── .git/
+│   ├── .env.example
 │   ├── .gitignore
 │   ├── config/
 │   │   └── db.js
@@ -64,9 +64,9 @@ shopy/
 │   ├── package.json
 │   ├── package-lock.json
 │   ├── server.js
-│   └── node_modules/
+│   └── .env (DO NOT COMMIT - use .env.example)
 └── shopy-frontend/
-    ├── .env
+    ├── .env.example
     ├── .gitignore
     ├── eslint.config.js
     ├── index.html
@@ -106,8 +106,8 @@ shopy/
     │   │       └── productSlice.js
     │   ├── services/
     │   │   └── api.js
-    │   └── utils/
-    └── node_modules/
+    │   ├── utils/
+    │   └── .env (DO NOT COMMIT - use .env.example)
 ```
 
 ## 🛠️ Backend (API)
@@ -136,7 +136,7 @@ shopy/
 ### setup
 1. `cd shopy-backend`
 2. `npm install`
-3. create `.env`:
+3. create `.env` (copy from `.env.example`):
    - `PORT=5000`
    - `MONGO_URI=<mongodb connection string>`
    - `JWT_SECRET=<strong secret>`
@@ -154,8 +154,11 @@ shopy/
 ### setup
 1. `cd shopy-frontend`
 2. `npm install`
-3. `npm run dev`
-4. default URL: `http://localhost:5173`
+3. create `.env` (copy from `.env.example`):
+   - `VITE_API_URL=http://localhost:5000/api`
+   - `VITE_STRIPE_PUBLIC_KEY=<your_stripe_public_key>`
+4. `npm run dev`
+5. default URL: `http://localhost:5173`
 
 ### user flow
 - register/login
@@ -176,14 +179,18 @@ shopy/
 
 ## 📌 Git commands (for final delivery)
 ```bash
-cd c:\Users\aradh\Desktop\shopy\shopy-backend
+cd shopy
 git status
 git add .
 git commit -m "Add Shopy project code"
-# Add remote once if needed:
-# git remote add origin <your-repo-url>
 git pull --rebase origin main
 git push origin main
 ```
 
 > Replace `main` with your branch name if different.
+
+## 🔒 Security Notes
+- **Never commit `.env` files** - Always use `.env.example` as a template
+- **Never commit `node_modules`** - Run `npm install` after cloning
+- **Rotate JWT secrets** if accidentally exposed
+- Environment variables are loaded via `dotenv` and should contain sensitive data only locally
