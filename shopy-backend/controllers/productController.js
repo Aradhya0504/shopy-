@@ -113,7 +113,7 @@ const updateProduct = async (req, res) => {
 
     product.name          = req.body.name          || product.name;
     product.description   = req.body.description   || product.description;
-    product.price         = req.body.price         || product.price;
+    product.price         = req.body.price         ?? product.price;
     product.discountPrice = req.body.discountPrice || product.discountPrice;
     product.images        = req.body.images        || product.images;
     product.category      = req.body.category      || product.category;

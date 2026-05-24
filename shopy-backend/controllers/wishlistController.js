@@ -39,8 +39,8 @@ const addToWishlist = async (req, res) => {
     }
 
     // Check if product already in wishlist
-    if (wishlist.products.includes(productId)) {
-      return res.status(400).json({ message: '❌ Product already in wishlist' });
+    if (wishlist.products.some(id => id.toString() === productId)) {
+    return res.status(400).json({ message: '❌ Product already in wishlist' });
     }
 
     // Add product

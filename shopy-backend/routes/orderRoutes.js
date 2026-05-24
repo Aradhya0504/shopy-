@@ -20,6 +20,7 @@ router.put('/:id/pay',        protect, updateOrderToPaid);
 router.put('/:id/cancel',     protect, cancelOrder);
 
 // ── Admin Only Routes ─────────────────────────────────
+router.get('/', protect, authorizeRoles('admin'), getAllOrders);
 router.put('/:id/deliver', protect, authorizeRoles('admin'), updateOrderToDelivered);
 
 module.exports = router;

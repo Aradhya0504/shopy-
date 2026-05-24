@@ -80,6 +80,11 @@ const getOrderById = async (req, res) => {
       return res.status(404).json({ message: '❌ Order not found' });
     }
 
+    // ✅ Allow only the order owner OR an admin
+    if (order.user._id.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+      return res.status(403).json({ message: '❌ Not authorized to view this order' });
+    }
+
     res.status(200).json(order);
   } catch (error) {
     res.status(500).json({ message: error.message });
