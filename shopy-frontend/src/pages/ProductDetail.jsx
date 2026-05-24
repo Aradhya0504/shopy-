@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import { getProductById, addReview, clearSuccess } from '../redux/slices/productSlice'
+import { getProductById, addReview, clearSuccess, getProductReviews } from '../redux/slices/productSlice'
 import { addToCart } from '../redux/slices/cartSlice'
 import Loader from '../components/Loader'
 import {
@@ -17,16 +17,16 @@ const ProductDetail = () => {
   const { id }     = useParams()
   const dispatch   = useDispatch()
   const navigate   = useNavigate()
-  const { product, loading, success } = useSelector((state) => state.products)
+  const { product, loading, success, reviews } = useSelector((state) => state.products)
   const { user }   = useSelector((state) => state.auth)
 
   const [quantity, setQuantity]   = useState(1)
   const [rating,   setRating]     = useState(5)
   const [comment,  setComment]    = useState('')
-  const [reviews,  setReviews]    = useState([])
 
   useEffect(() => {
     dispatch(getProductById(id))
+    dispatch(getProductReviews(id))
   }, [dispatch, id])
 
   useEffect(() => {
@@ -34,6 +34,7 @@ const ProductDetail = () => {
       toast.success('Review added successfully!')
       dispatch(clearSuccess())
       dispatch(getProductById(id))
+      dispatch(getProductReviews(id))
       setComment('')
       setRating(5)
     }
@@ -283,16 +284,52 @@ const ProductDetail = () => {
         )}
 
         {/* Reviews List */}
-        {product.numReviews === 0 ? (
+        {product.numReviews === 0 || !reviews || reviews.length === 0 ? (
           <div className="text-center py-10">
             <div className="text-5xl mb-3">⭐</div>
             <p className="text-gray-500">No reviews yet. Be the first to review!</p>
           </div>
         ) : (
-          <div className="space-y-4">
-            <p className="text-gray-500 text-sm">
-              Reviews will appear here after submission.
-            </p>
+          <div className="space-y-6">
+            {reviews.map((rev) => (
+              <div key={rev._id} className="border-b border-gray-100 pb-6 last:border-0 last:pb-0">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-blue-100 text-blue-600 w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm">
+                      {rev.user?.name?.charAt(0).toUpperCase() || 'U'}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-800">
+                        {rev.user?.name || 'Anonymous User'}
+                      </p>
+                      <div className="flex items-center gap-1 mt-0.5">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <FiStar
+                            key={star}
+                            size={14}
+                            className={
+                              star <= rev.rating
+                                ? 'text-yellow-400 fill-yellow-400'
+                                : 'text-gray-300'
+                            }
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <span className="text-xs text-gray-400">
+                    {new Date(rev.createdAt).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                    })}
+                  </span>
+                </div>
+                <p className="text-gray-600 text-sm pl-13 leading-relaxed">
+                  {rev.comment}
+                </p>
+              </div>
+            ))}
           </div>
         )}
       </div>

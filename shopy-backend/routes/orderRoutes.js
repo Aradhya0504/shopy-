@@ -21,6 +21,5 @@ router.put('/:id/cancel',     protect, cancelOrder);
 
 // ── Admin Only Routes ─────────────────────────────────
 router.put('/:id/deliver', protect, authorizeRoles('admin'), updateOrderToDelivered);
-router.get('/',            protect, authorizeRoles('admin'), getAllOrders);
 
 module.exports = router;

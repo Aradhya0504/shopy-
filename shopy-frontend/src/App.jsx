@@ -1,5 +1,7 @@
+import { useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { getCart } from './redux/slices/cartSlice'
 
 // Components
 import Navbar from './components/Navbar'
@@ -19,7 +21,14 @@ import Profile from './pages/Profile'
 import AdminDashboard from './pages/AdminDashboard'
 
 function App() {
+  const dispatch = useDispatch()
   const { user } = useSelector((state) => state.auth)
+
+  useEffect(() => {
+    if (user) {
+      dispatch(getCart())
+    }
+  }, [dispatch, user])
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">

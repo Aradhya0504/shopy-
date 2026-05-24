@@ -15,6 +15,25 @@ const createOrder = async (req, res) => {
       return res.status(400).json({ message: '❌ Cart is empty' });
     }
 
+    // Validate stock for all products in the cart first
+    for (const item of cart.items) {
+      const product = await Product.findById(item.product);
+      if (!product) {
+        return res.status(404).json({ message: `❌ Product with ID ${item.product} not found` });
+      }
+      if (product.stock < item.quantity) {
+        return res.status(400).json({ message: `❌ Not enough stock for "${product.name}"` });
+      }
+    }
+
+    // Decrement stock for each product
+    for (const item of cart.items) {
+      await Product.findByIdAndUpdate(
+        item.product,
+        { $inc: { stock: -item.quantity } }
+      );
+    }
+
     // Create order from cart
     const order = await Order.create({
       user:            req.user._id,
@@ -119,6 +138,18 @@ const cancelOrder = async (req, res) => {
 
     if (order.orderStatus === 'delivered') {
       return res.status(400).json({ message: '❌ Cannot cancel delivered order' });
+    }
+
+    if (order.orderStatus === 'cancelled') {
+      return res.status(400).json({ message: '❌ Order is already cancelled' });
+    }
+
+    // Restore stock for each product in the cancelled order
+    for (const item of order.items) {
+      await Product.findByIdAndUpdate(
+        item.product,
+        { $inc: { stock: item.quantity } }
+      );
     }
 
     order.orderStatus = 'cancelled';

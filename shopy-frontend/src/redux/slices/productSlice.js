@@ -91,12 +91,28 @@ export const addReview = createAsyncThunk(
   }
 );
 
+// ── Get Product Reviews ──────────────────────────────
+export const getProductReviews = createAsyncThunk(
+  'products/getReviews',
+  async (productId, thunkAPI) => {
+    try {
+      const { data } = await api.get(`/reviews/${productId}`);
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || 'Failed to get reviews'
+      );
+    }
+  }
+);
+
 // ── Product Slice ─────────────────────────────────────
 const productSlice = createSlice({
   name: 'products',
   initialState: {
     products:       [],
     product:        null,
+    reviews:        [],
     count:          0,
     loading:        false,
     error:          null,
@@ -183,6 +199,19 @@ const productSlice = createSlice({
         state.success = true;
       })
       .addCase(addReview.rejected, (state, action) => {
+        state.loading = false;
+        state.error   = action.payload;
+      })
+      // Get Product Reviews
+      .addCase(getProductReviews.pending, (state) => {
+        state.loading = true;
+        state.error   = null;
+      })
+      .addCase(getProductReviews.fulfilled, (state, action) => {
+        state.loading = false;
+        state.reviews = action.payload;
+      })
+      .addCase(getProductReviews.rejected, (state, action) => {
         state.loading = false;
         state.error   = action.payload;
       });

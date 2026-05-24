@@ -94,6 +94,15 @@ const updateCartItem = async (req, res) => {
       return res.status(404).json({ message: '❌ Item not found in cart' });
     }
 
+    // Check product stock
+    const product = await Product.findById(cart.items[itemIndex].product);
+    if (!product) {
+      return res.status(404).json({ message: '❌ Product not found' });
+    }
+    if (product.stock < quantity) {
+      return res.status(400).json({ message: '❌ Not enough stock available' });
+    }
+
     // Update quantity
     cart.items[itemIndex].quantity = quantity;
 

@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const Category = require('../models/Category');
-const Product = require('../models/Product');
-const User = require('../models/User');
+const Category = require('../models/category.js');
+const Product = require('../models/product.js');
+const User = require('../models/user.js');
 
 dotenv.config();
 
@@ -204,7 +204,7 @@ const getProducts = (categoryMap) => [
   price: 14, discountPrice: 11, stock: 180,
   category: categoryMap['Books'],
   images: ['https://covers.openlibrary.org/b/isbn/9781612680194-L.jpg'],
-},,
+},
 
   // ── Sports (3) ───────────────────────────────────
   {

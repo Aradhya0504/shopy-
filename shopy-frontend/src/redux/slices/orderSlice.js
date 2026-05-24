@@ -51,7 +51,7 @@ export const getAllOrders = createAsyncThunk(
   'orders/getAll',
   async (_, thunkAPI) => {
     try {
-      const { data } = await api.get('/orders');
+      const { data } = await api.get('/admin/orders');
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
