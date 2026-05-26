@@ -1,6 +1,8 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const cors = require('cors');
+const express   = require('express');
+const dotenv    = require('dotenv');
+const cors      = require('cors');
+const helmet    = require('helmet');
+const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/db');
 
 dotenv.config();
@@ -8,7 +10,32 @@ connectDB();
 
 const app = express();
 
-app.use(cors());
+// ── Security Headers ──────────────────────────────────
+app.use(helmet());
+
+// ── CORS — only allow your frontend ──────────────────
+app.use(cors({
+  origin:      process.env.FRONTEND_URL || 'http://localhost:5173',
+  credentials: true,
+}));
+
+// ── Rate Limiting ─────────────────────────────────────
+// Global: 100 requests per 15 min per IP
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max:      100,
+  message:  { message: '❌ Too many requests, please try again later' },
+});
+
+// Auth: 10 attempts per 15 min (brute-force protection)
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max:      10,
+  message:  { message: '❌ Too many login attempts, please try again later' },
+});
+
+app.use(globalLimiter);
+
 app.use(express.json());
 
 // Health check
@@ -16,8 +43,8 @@ app.get('/', (req, res) => {
   res.json({ message: '🛍️ Shopy API is running...' });
 });
 
-// ── Routes (uncomment as we build them) ──────────────
-app.use('/api/auth',       require('./routes/authRoutes'));
+// ── Routes ────────────────────────────────────────────
+app.use('/api/auth',       authLimiter, require('./routes/authRoutes'));
 app.use('/api/products',   require('./routes/productRoutes'));
 app.use('/api/categories', require('./routes/categoryRoutes'));
 app.use('/api/cart',       require('./routes/cartRoutes'));
@@ -25,6 +52,7 @@ app.use('/api/orders',     require('./routes/orderRoutes'));
 app.use('/api/wishlist',   require('./routes/wishlistRoutes'));
 app.use('/api/reviews',    require('./routes/reviewRoutes'));
 app.use('/api/admin',      require('./routes/adminRoutes'));
+app.use('/api/payment',    require('./routes/paymentRoutes'));
 
 // 404 Handler
 app.use((req, res) => {

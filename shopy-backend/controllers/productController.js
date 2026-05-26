@@ -1,59 +1,58 @@
-const Product = require('../models/product.js')
+const Product = require('../models/product.js');
 
-// ── @desc    Get all products (with search & filter)
+// ── @desc    Get all products (with filters, search, sort)
 // ── @route   GET /api/products
 // ── @access  Public
 const getProducts = async (req, res) => {
   try {
     const { keyword, category, minPrice, maxPrice, sortBy } = req.query;
 
-    // ── Build filter object ────────────────────────────
-    let filter = { isActive: true };
+    // ── Build filter ──────────────────────────────────
+    const filter = { isActive: true };
 
     if (keyword) {
-  filter.$or = [
-    { name:        { $regex: keyword, $options: 'i' } },
-    { description: { $regex: keyword, $options: 'i' } },
-  ]
-}
+      filter.$or = [
+        { name:        { $regex: keyword, $options: 'i' } },
+        { description: { $regex: keyword, $options: 'i' } },
+      ];
+    }
+
     if (category) {
       filter.category = category;
     }
+
     if (minPrice || maxPrice) {
       filter.price = {};
       if (minPrice) filter.price.$gte = Number(minPrice);
       if (maxPrice) filter.price.$lte = Number(maxPrice);
     }
 
-    // ── Build sort object ──────────────────────────────
-    let sort = {};
-    if (sortBy === 'price_asc')  sort.price = 1;
-    if (sortBy === 'price_desc') sort.price = -1;
-    if (sortBy === 'newest')     sort.createdAt = -1;
-    if (sortBy === 'rating')     sort.ratings = -1;
+    // ── Build sort ────────────────────────────────────
+    let sort = { createdAt: -1 };           // default: newest first
+    if (sortBy === 'price_asc')  sort = { price:     1  };
+    if (sortBy === 'price_desc') sort = { price:    -1  };
+    if (sortBy === 'newest')     sort = { createdAt: -1 };
+    if (sortBy === 'rating')     sort = { ratings:   -1 };
 
     const products = await Product.find(filter)
       .populate('category', 'name')
-      .populate('seller', 'name email')
+      .populate('seller',   'name')
       .sort(sort);
 
-    res.status(200).json({
-      count: products.length,
-      products,
-    });
+    res.status(200).json({ products, count: products.length });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// ── @desc    Get single product
+// ── @desc    Get single product by ID
 // ── @route   GET /api/products/:id
 // ── @access  Public
 const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id)
       .populate('category', 'name')
-      .populate('seller', 'name email');
+      .populate('seller',   'name');
 
     if (!product) {
       return res.status(404).json({ message: '❌ Product not found' });
@@ -65,33 +64,19 @@ const getProductById = async (req, res) => {
   }
 };
 
-// ── @desc    Create a product
+// ── @desc    Create a new product
 // ── @route   POST /api/products
 // ── @access  Private/Admin/Seller
 const createProduct = async (req, res) => {
   try {
-    const {
-      name,
-      description,
-      price,
-      discountPrice,
-      images,
-      category,
-      stock,
-    } = req.body;
+    const { name, description, price, discountPrice, images, category, stock } = req.body;
 
-    if (!name || !description || !price || !category || !stock) {
+    if (!name || !description || !price || !category || stock === undefined) {
       return res.status(400).json({ message: '❌ Please fill all required fields' });
     }
 
     const product = await Product.create({
-      name,
-      description,
-      price,
-      discountPrice,
-      images,
-      category,
-      stock,
+      name, description, price, discountPrice, images, category, stock,
       seller: req.user._id,
     });
 
@@ -111,14 +96,16 @@ const updateProduct = async (req, res) => {
       return res.status(404).json({ message: '❌ Product not found' });
     }
 
-    product.name          = req.body.name          || product.name;
-    product.description   = req.body.description   || product.description;
-    product.price         = req.body.price         ?? product.price;
-    product.discountPrice = req.body.discountPrice || product.discountPrice;
-    product.images        = req.body.images        || product.images;
-    product.category      = req.body.category      || product.category;
-    product.stock         = req.body.stock         || product.stock;
-    product.isActive      = req.body.isActive      ?? product.isActive;
+    const { name, description, price, discountPrice, images, category, stock, isActive } = req.body;
+
+    product.name          = name          ?? product.name;
+    product.description   = description   ?? product.description;
+    product.price         = price         ?? product.price;
+    product.discountPrice = discountPrice ?? product.discountPrice;
+    product.images        = images        ?? product.images;
+    product.category      = category      ?? product.category;
+    product.stock         = stock         ?? product.stock;
+    product.isActive      = isActive      ?? product.isActive;
 
     const updatedProduct = await product.save();
     res.status(200).json(updatedProduct);

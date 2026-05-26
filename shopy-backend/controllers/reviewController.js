@@ -1,11 +1,16 @@
-const Review = require('../models/review.js');
-const Product = require('../models/product.js');
+const Review   = require('../models/review.js');
+const Product  = require('../models/product.js');
+const mongoose = require('mongoose');
 
 // ── @desc    Get all reviews for a product
 // ── @route   GET /api/reviews/:productId
 // ── @access  Public
 const getProductReviews = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.productId)) {
+      return res.status(400).json({ message: '❌ Invalid product ID' });
+    }
+
     const reviews = await Review.find({ product: req.params.productId })
       .populate('user', 'name profilePicture');
 
@@ -73,7 +78,7 @@ const updateReview = async (req, res) => {
       return res.status(403).json({ message: '❌ Not authorized' });
     }
 
-    review.rating  = req.body.rating  || review.rating;
+    review.rating  = req.body.rating  ?? review.rating;
     review.comment = req.body.comment || review.comment;
 
     const updatedReview = await review.save();

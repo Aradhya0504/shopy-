@@ -33,6 +33,7 @@ const Navbar = () => {
     if (searchTerm.trim()) {
       navigate(`/products?keyword=${searchTerm}`)
       setSearchTerm('')
+      setMenuOpen(false) // close mobile menu after search
     }
   }
 

@@ -13,49 +13,67 @@ const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams()
 
   const [filters, setFilters] = useState({
-    keyword:  searchParams.get('keyword')  || '',
+    keyword:  searchParams.get('keyword') || '',
     category: '',
     minPrice: '',
     maxPrice: '',
     sortBy:   '',
   })
 
-  const [categories,   setCategories]   = useState([])
-  const [showFilters,  setShowFilters]  = useState(false)
+  const [categories,  setCategories]  = useState([])
+  const [showFilters, setShowFilters] = useState(false)
+  const [catsLoaded,  setCatsLoaded]  = useState(false)
 
-  // ── Fetch categories from backend ─────────────────
+  // ── Step 1a: Fetch categories ONCE on mount ────────────
   useEffect(() => {
-  const fetchCategories = async () => {
-    try {
-      const { data } = await api.get('/categories')
-      setCategories(data)
-
-      // Match categoryName from URL to real ID
-      const categoryName = searchParams.get('categoryName')
-      if (categoryName) {
-        const matched = data.find(
-          (cat) => cat.name.toLowerCase() === categoryName.toLowerCase()
-        )
-        if (matched) {
-          setFilters((prev) => ({ ...prev, category: matched._id }))
-        }
+    const fetchCategories = async () => {
+      try {
+        const { data } = await api.get('/categories')
+        setCategories(data)
+      } catch (error) {
+        console.error('Failed to fetch categories', error)
+      } finally {
+        setCatsLoaded(true)
       }
-    } catch (error) {
-      console.error('Failed to fetch categories', error)
     }
-  }
-  fetchCategories()
-}, [])
+    fetchCategories()
+  }, []) // fetch only once — categories are static
 
+  // ── Step 1b: Sync keyword + resolve categoryName from URL ──
   useEffect(() => {
+    if (!catsLoaded) return
+
+    // Sync keyword (fixes Navbar search when already on /products)
+    const keyword = searchParams.get('keyword')
+    if (keyword !== null) {
+      setFilters((prev) => ({ ...prev, keyword }))
+    }
+
+    // Resolve categoryName → category ID
+    const categoryName = searchParams.get('categoryName')
+    if (categoryName && categories.length > 0) {
+      const matched = categories.find(
+        (cat) => cat.name.toLowerCase() === categoryName.toLowerCase()
+      )
+      if (matched) {
+        setFilters((prev) => ({ ...prev, category: matched._id }))
+      }
+    }
+  }, [catsLoaded, searchParams, categories]) // re-run when user navigates from Home
+
+  // ── Step 2: Fetch products ONLY after categories are resolved ──
+  useEffect(() => {
+    if (!catsLoaded) return // Wait — don't fetch until category ID is known
+
     const params = {}
     if (filters.keyword)  params.keyword  = filters.keyword
     if (filters.category) params.category = filters.category
     if (filters.minPrice) params.minPrice = filters.minPrice
     if (filters.maxPrice) params.maxPrice = filters.maxPrice
     if (filters.sortBy)   params.sortBy   = filters.sortBy
+
     dispatch(getProducts(params))
-  }, [dispatch, filters])
+  }, [dispatch, filters, catsLoaded])
 
   const handleFilterChange = (e) => {
     setFilters({ ...filters, [e.target.name]: e.target.value })
@@ -136,7 +154,7 @@ const Products = () => {
               </div>
             </div>
 
-            {/* Category ← NOW USES REAL IDs FROM BACKEND */}
+            {/* Category */}
             <div className="mb-5">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Category

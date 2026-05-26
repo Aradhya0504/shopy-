@@ -90,7 +90,7 @@ const getProducts = (categoryMap) => [
     description: 'Fast and smooth Android phone',
     price: 699, discountPrice: 649, stock: 40,
     category: categoryMap['Mobile Phones'],
-    images: ['https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=500&q=80'],
+    images: ['https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&q=80'],
   },
   {
     name: 'Google Pixel 8',
@@ -180,7 +180,7 @@ const getProducts = (categoryMap) => [
     description: 'Retro style sneakers',
     price: 99, discountPrice: 89, stock: 70,
     category: categoryMap['Shoes'],
-    images: ['https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=500&q=80'],
+    images: ['https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=500&q=80'],
   },
 
   // ── Books (3) ────────────────────────────────────
@@ -288,7 +288,7 @@ const getProducts = (categoryMap) => [
     description: 'Classic Barbie dollhouse',
     price: 89, discountPrice: 79, stock: 40,
     category: categoryMap['Toys'],
-    images: ['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80'],
+    images: ['https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=500&q=80'],
   },
   {
     name: 'Hot Wheels Track Set',
@@ -350,7 +350,7 @@ const getProducts = (categoryMap) => [
     description: 'Portable electric tyre inflator',
     price: 39, discountPrice: 34, stock: 60,
     category: categoryMap['Automotive'],
-    images: ['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80'],
+    images: ['https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&q=80'],
   },
 
   // ── Jewellery (2) ────────────────────────────────
@@ -398,7 +398,7 @@ const getProducts = (categoryMap) => [
     description: 'Spacious sports backpack',
     price: 59, discountPrice: 49, stock: 70,
     category: categoryMap['Bags'],
-    images: ['https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&q=80'],
+    images: ['https://images.unsplash.com/photo-1622560481024-4b8dd0b74014?w=500&q=80'],
   },
 
   // ── Sunglasses (2) ───────────────────────────────
@@ -501,7 +501,7 @@ const getProducts = (categoryMap) => [
     description: 'Ink tank printer low cost prints',
     price: 199, discountPrice: 179, stock: 25,
     category: categoryMap['Printers'],
-    images: ['https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=500&q=80'],
+    images: ['https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=500&q=80'],
   },
 
   // ── Networking (2) ───────────────────────────────
@@ -517,7 +517,7 @@ const getProducts = (categoryMap) => [
     description: 'High performance WiFi 6 router',
     price: 199, discountPrice: 179, stock: 30,
     category: categoryMap['Networking'],
-    images: ['https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=500&q=80'],
+    images: ['https://images.unsplash.com/photo-1606904825846-647eb07f5be2?w=500&q=80'],
   },
 
   // ── Health (2) ───────────────────────────────────
@@ -549,7 +549,7 @@ const getProducts = (categoryMap) => [
     description: 'Video baby monitor with night vision',
     price: 99, discountPrice: 89, stock: 35,
     category: categoryMap['Baby Products'],
-    images: ['https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=500&q=80'],
+    images: ['https://images.unsplash.com/photo-1519689373023-dd07c7988603?w=500&q=80'],
   },
 
   // ── Pet Supplies (2) ─────────────────────────────
@@ -613,7 +613,7 @@ const getProducts = (categoryMap) => [
     description: 'Professional drawing pencil set',
     price: 19, discountPrice: 16, stock: 100,
     category: categoryMap['Art & Craft'],
-    images: ['https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500&q=80'],
+    images: ['https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=500&q=80'],
   },
 
   // ── Garden (2) ───────────────────────────────────
@@ -629,7 +629,7 @@ const getProducts = (categoryMap) => [
     description: 'Stainless steel watering can 5L',
     price: 24, discountPrice: 19, stock: 70,
     category: categoryMap['Garden'],
-    images: ['https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=500&q=80'],
+    images: ['https://images.unsplash.com/photo-1416464958040-ee498c30c7db?w=500&q=80'],
   },
 ]
 
