@@ -1,10 +1,14 @@
 # Shopy (E-Commerce Full Stack)
 
+🌐 **Live Demo:** [shopy-zeta-one.vercel.app](https://shopy-zeta-one.vercel.app)
+🔧 **Backend API:** [shopy-backend-sq90.onrender.com](https://shopy-backend-sq90.onrender.com)
+📁 **GitHub:** [github.com/Aradhya0504/shopy-](https://github.com/Aradhya0504/shopy-)
+
 ## 🚀 Project Overview
 Shopy is a full-stack e-commerce platform.
 - Backend: Node.js + Express + MongoDB + JWT authentication
 - Frontend: React + Vite + Redux + Tailwind
-- Features: product catalog, categories, cart, wishlist, reviews, orders, user roles (customer/admin), checkout flow
+- Features: product catalog, categories, cart, wishlist, reviews, orders, user roles (customer/admin), checkout flow, Stripe payment integration
 
 ## 🧭 What an interviewer should notice
 1. Full REST API design with token-based auth and role-based guards.
@@ -116,6 +120,8 @@ shopy/
 - MongoDB + Mongoose
 - JSON Web Tokens (`jsonwebtoken`)
 - `bcryptjs` for password security
+- `stripe` for payment processing
+- `helmet` + `express-rate-limit` for security hardening
 - `dotenv`, `cors`, `nodemon`
 
 ### key endpoints
@@ -129,6 +135,7 @@ shopy/
 - `/api/orders` create myorders/get order/update status
 - `/api/reviews/:productId` add/update/delete
 - `/api/admin/*` stats/users/orders for admin role
+- `/api/payment/create-intent` Stripe PaymentIntent creation
 
 ### admin security
 - `roleMiddleware` ensures `admin` enters restricted routes (user management, global orders, delivery status)
@@ -140,6 +147,8 @@ shopy/
    - `PORT=5000`
    - `MONGO_URI=<mongodb connection string>`
    - `JWT_SECRET=<strong secret>`
+   - `STRIPE_SECRET_KEY=<your stripe secret key>`
+   - `FRONTEND_URL=http://localhost:5173`
 4. `npm run dev`
 5. optional seeding: `npm run seed`
 
